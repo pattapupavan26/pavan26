@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+
+#define NUM_QUESTIONS 5
+
+struct Question {
+    char question[200];
+    char options[4][100];
+    char answer; // 'A', 'B', 'C', 'D'
+};
+
+int main() {
+    struct Question quiz[NUM_QUESTIONS] = {
+        {
+            "What is the capital of France?",
+            {"A. Berlin", "B. Madrid", "C. Paris", "D. Rome"},
+            'C'
+        },
+        {
+            "Which language is used for system programming?",
+            {"A. Python", "B. C", "C. HTML", "D. CSS"},
+            'B'
+        },
+        {
+            "What does RAM stand for?",
+            {"A. Random Access Memory", "B. Readily Available Memory", "C. Run Access Memory", "D. Real Active Memory"},
+            'A'
+        },
+        {
+            "Which planet is known as the Red Planet?",
+            {"A. Earth", "B. Mars", "C. Venus", "D. Jupiter"},
+            'B'
+        },
+        {
+            "Which operator is used for multiplication in C?",
+            {"A. x", "B. *", "C. %", "D. +"},
+            'B'
+        }
+    };
+
+    int score = 0;
+    char userAnswer;
+
+    printf("===== SIMPLE QUIZ =====\n\n");
+
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        printf("Q%d: %s\n", i + 1, quiz[i].question);
+        for (int j = 0; j < 4; j++)
+            printf("%s\n", quiz[i].options[j]);
+
+        printf("Enter your answer (A/B/C/D): ");
+        scanf(" %c", &userAnswer);
+        userAnswer = toupper(userAnswer);
+
+        if (userAnswer == quiz[i].answer) {
+            printf("Correct!\n\n");
+            score++;
+        } else {
+            printf("Wrong! Correct answer is %c\n\n", quiz[i].answer);
+        }
+    }
+
+    printf("===== QUIZ COMPLETED =====\n");
+    printf("Your Score: %d/%d\n", score, NUM_QUESTIONS);
+
+    return 0;
+}
