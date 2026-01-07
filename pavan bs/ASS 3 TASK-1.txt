@@ -1,0 +1,14 @@
+#include <stdio.h>  // Include the standard input/output library
+
+int main() {
+    // Print your name
+    printf("Name: Alex\n");  
+    
+    // Print your age
+    printf("Age: 20\n");  
+    
+    // Print your country
+    printf("Country: India\n");  
+    
+    return 0;  // Return 0 indicates the program finished successfully
+}

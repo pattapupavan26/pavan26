@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int main() {
+    int n, i;
+    
+    // Ask the user for the number of elements
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n]; // Declare an array of size n (C99 feature)
+
+    // Read n elements from the user
+    for(i = 0; i < n; i++) {
+        printf("Enter element %d: ", i + 1);
+        scanf("%d", &arr[i]);
+    }
+
+    // Initialize sum, largest, and smallest
+    int sum = 0;
+    int largest = arr[0];
+    int smallest = arr[0];
+
+    // Iterate through the array
+    for(i = 0; i < n; i++) {
+        sum += arr[i];             // Add to sum
+        if(arr[i] > largest)       // Check for largest
+            largest = arr[i];
+        if(arr[i] < smallest)      // Check for smallest
+            smallest = arr[i];
+    }
+
+    // Calculate average
+    float average = (float)sum / n;
+
+    // Display results
+    printf("\nSum: %d\n", sum);
+    printf("Average: %.2f\n", average);
+    printf("Largest: %d\n", largest);
+    printf("Smallest: %d\n", smallest);
+
+    return 0;
+}
