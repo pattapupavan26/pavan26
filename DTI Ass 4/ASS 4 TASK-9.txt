@@ -1,0 +1,49 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+def scrape_titles(url):
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise error for bad status
+    except requests.RequestException as e:
+        print(f"Error fetching {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Extract h1 and h2 titles
+    titles = []
+    for tag in soup.find_all(['h1', 'h2']):
+        title_text = tag.get_text(strip=True)
+        if title_text:
+            titles.append(title_text)
+
+    return titles
+
+def save_to_csv(titles, filename='titles.csv'):
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Title'])
+        for title in titles:
+            writer.writerow([title])
+    print(f"Saved {len(titles)} titles to {filename}")
+
+if __name__ == "__main__":
+    urls = [
+        'https://www.python.org/',   # Example URL
+        # Add more URLs here
+    ]
+
+    all_titles = []
+
+    for url in urls:
+        print(f"Scraping {url} ...")
+        titles = scrape_titles(url)
+        all_titles.extend(titles)
+        print(f"Found {len(titles)} titles.\n")
+
+    if all_titles:
+        save_to_csv(all_titles)
+    else:
+        print("No titles found.")
