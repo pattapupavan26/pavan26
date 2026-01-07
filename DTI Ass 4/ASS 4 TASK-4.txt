@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TASKS 100
+
+struct Task {
+    int id;
+    char title[100];
+    int completed;
+};
+
+void loadTasks(struct Task tasks[], int *count);
+void saveTasks(struct Task tasks[], int count);
+void addTask(struct Task tasks[], int *count);
+void viewTasks(struct Task tasks[], int count);
+void removeTask(struct Task tasks[], int *count);
+void markTask(struct Task tasks[], int count);
+
+int main() {
+    struct Task tasks[MAX_TASKS];
+    int count = 0;
+    int choice;
+
+    loadTasks(tasks, &count);
+
+    do {
+        printf("\n===== TO-DO LIST =====\n");
+        printf("1. Add Task\n");
+        printf("2. View Tasks\n");
+        printf("3. Remove Task\n");
+        printf("4. Mark Task as Completed\n");
+        printf("5. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addTask(tasks, &count);
+                saveTasks(tasks, count);
+                break;
+            case 2:
+                viewTasks(tasks, count);
+                break;
+            case 3:
+                removeTask(tasks, &count);
+                saveTasks(tasks, count);
+                break;
+            case 4:
+                markTask(tasks, count);
+                saveTasks(tasks, count);
+                break;
+            case 5:
+                printf("Exiting To-Do List.\n");
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
+
+/* Load tasks from file */
+void loadTasks(struct Task tasks[], int *count) {
+    FILE *fp = fopen("tasks.dat", "rb");
+    if (fp == NULL)
+        return;
+
+    fread(count, sizeof(int), 1, fp);
+    fread(tasks, sizeof(struct Task), *count, fp);
+    fclose(fp);
+}
+
+/* Save tasks to file */
+void saveTasks(struct Task tasks[], int count) {
+    FILE *fp = fopen("tasks.dat", "wb");
+    if (fp == NULL) {
+        printf("Error saving tasks.\n");
+        return;
+    }
+
+    fwrite(&count, sizeof(int), 1, fp);
+    fwrite(tasks, sizeof(struct Task), count, fp);
+    fclose(fp);
+}
+
+/* Add a new task */
+void addTask(struct Task tasks[], int *count) {
+    if (*count >= MAX_TASKS) {
+        printf("Task list full!\n");
+        return;
+    }
+
+    tasks[*count].id = *count + 1;
+    tasks[*count].completed = 0;
+
+    printf("Enter task title: ");
+    scanf(" %[^\n]", tasks[*count].title);
+
+    (*count)++;
+    printf("Task added successfully!\n");
+}
+
+/* View tasks */
+void viewTasks(struct Task tasks[], int count) {
+    if (count == 0) {
+        printf("No tasks available.\n");
+        return;
+    }
+
+    printf("\n--- Task List ---\n");
+    for (int i = 0; i < count; i++) {
+        printf("%d. [%c] %s\n",
+               tasks[i].id,
+               tasks[i].completed ? 'X' : ' ',
+               tasks[i].title);
+    }
+}
+
+/* Remove a task */
+void removeTask(struct Task tasks[], int *count) {
+    int id;
+    printf("Enter task ID to remove: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < *count; i++) {
+        if (tasks[i].id == id) {
+            for (int j = i; j < *count - 1; j++) {
+                tasks[j] = tasks[j + 1];
+                tasks[j].id = j + 1;
+            }
+            (*count)--;
+            printf("Task removed.\n");
+            return;
+        }
+    }
+
+    printf("Task not found.\n");
+}
+
+/* Mark task as completed */
+void markTask(struct Task tasks[], int count) {
+    int id;
+    printf("Enter task ID to mark completed: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < count; i++) {
+        if (tasks[i].id == id) {
+            tasks[i].completed = 1;
+            printf("Task marked as completed.\n");
+            return;
+        }
+    }
+
+    printf("Task not found.\n");
+}
